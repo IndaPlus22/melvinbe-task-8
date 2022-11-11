@@ -2,7 +2,7 @@
 
 .data
 
-primes:		.space  1000            # reserves a block of 1000 bytes in application memory
+primes:		.space  4000          # reserves a block of 1000 bytes in application memory
 err_msg:	.asciiz "Invalid input! Expected integer n, where 1 < n < 1001.\n"
 
 ### Executable Code Section ###
@@ -32,7 +32,7 @@ main:
     li 	    $t3 999
     
     init_loop:
-        sb	 $t2 ($t1)             # primes[i] = 1
+        sw	 $t2 ($t1)             # primes[i] = 1
         addi    $t1 $t1 4             # increment pointer by size of an integer
         addi    $t2 $t2 1             # increment counter
         bne	 $t2 $t3 init_loop     # loop if counter != 999
@@ -41,7 +41,7 @@ main:
     sieve_loop:
         la $t1 primes # $t1 = address of the first element in the array
         
-        mul $t3 $t2 4 	# int 4i = 4 * i
+        mul $t3 $t2 4 	 # int 4i = 4 * i
         add $t1 $t1 $t3	 # $t1 += 4i
         addi $t1 $t1 -8 # $t1 += -8 (-2 * 4)
 	
@@ -50,7 +50,7 @@ main:
         # remove every number divisible by i
         remove_loop:
             add $t1 $t1 $t3 # $t1 += 4i (increment pointer in steps of 4i)
-            sb $0 ($t1) # set value at pointer to 0
+            sw $0 ($t1) # set value at pointer to 0
             add $t4 $t4 $t2 # j = j + i (increment j in steps of i)
             blt $t4 $s0 remove_loop # loop while j < input value
         
@@ -66,7 +66,7 @@ main:
         lw $a0 ($t1) # int p = primes[i]
 
         beq $0 $a0 skip # do not print if number has been removed (set to 0)
-        
+
         # print integer p from $a0	
         li $v0 1
         syscall
